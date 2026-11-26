@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MPH Item Standardization Portal – Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12324A; --ink-2:#3E5A6E; --muted:#6B8293;
+  --bg:#F2F6F5; --surface:#FFFFFF; --surface-2:#E6EFEC; --line:#CFDDD8;
+  --accent:#1E8C6E; --accent-ink:#FFFFFF; --accent-soft:#D6EDE5;
+  --amber:#B57A0C; --amber-soft:#F6EBD2; --red:#B3412F; --red-soft:#F5DDD8; --blue:#2D6A9F; --blue-soft:#DCE8F3;
+  --side:#12324A; --side-ink:#DCE8EE; --side-act:#1E4A68;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#E3EEF2; --ink-2:#B9CCD6; --muted:#8CA3B0;
+    --bg:#0F1D27; --surface:#162834; --surface-2:#1C3341; --line:#2A4554;
+    --accent:#3DBB95; --accent-ink:#06231A; --accent-soft:#173F35;
+    --amber:#E2AE48; --amber-soft:#3B3020; --red:#E2806E; --red-soft:#43261F; --blue:#7FB2E0; --blue-soft:#1C3347;
+    --side:#0B1720; --side-ink:#B9CCD6; --side-act:#1C3341;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E3EEF2; --ink-2:#B9CCD6; --muted:#8CA3B0;
+  --bg:#0F1D27; --surface:#162834; --surface-2:#1C3341; --line:#2A4554;
+  --accent:#3DBB95; --accent-ink:#06231A; --accent-soft:#173F35;
+  --amber:#E2AE48; --amber-soft:#3B3020; --red:#E2806E; --red-soft:#43261F; --blue:#7FB2E0; --blue-soft:#1C3347;
+  --side:#0B1720; --side-ink:#B9CCD6; --side-act:#1C3341;
+  color-scheme: dark;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+nav{background:var(--side);color:var(--side-ink);padding:22px 14px;display:flex;flex-direction:column;gap:4px}
+.brand{font-weight:700;font-size:17px;color:#fff;line-height:1.25;margin:0 8px 18px}
+.brand small{display:block;font-weight:400;font-size:12.5px;color:var(--side-ink);opacity:.8;margin-top:3px}
+nav button{all:unset;cursor:pointer;padding:9px 12px;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
+nav button:hover{background:var(--side-act)}
+nav button[aria-current="page"]{background:var(--side-act);color:#fff;font-weight:700}
+nav button:focus-visible{outline:3px solid var(--accent)}
+.pill{font-size:12px;background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:0 7px;font-weight:700}
+.role{margin-top:auto;padding:12px 8px 0;border-top:1px solid var(--side-act);font-size:13px}
+.role label{display:block;margin-bottom:6px;opacity:.85}
+.role select{width:100%;background:var(--side-act);border:1px solid #2E5674;border-radius:6px;padding:6px;color:#fff}
+.proto{margin:10px 8px 0;font-size:12px;opacity:.7}
+main{padding:28px 34px 60px;max-width:1180px;width:100%}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 22px}
+h2{font-size:18px;margin:0 0 10px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+.steps{display:flex;gap:0;margin:0 0 20px;padding:0;list-style:none;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.steps li{flex:1;padding:10px 12px;font-size:13.5px;color:var(--muted);border-right:1px solid var(--line);display:flex;gap:8px;align-items:center}
+.steps li:last-child{border-right:0}
+.steps .n{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:none}
+.steps li.done{color:var(--accent)}
+.steps li.done .n{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.steps li.now{color:var(--ink);font-weight:700;background:var(--surface-2)}
+label.f{display:block;font-weight:700;font-size:13.5px;margin:12px 0 5px}
+label.f .req{color:var(--red);font-weight:700}
+.hint{font-size:12.5px;color:var(--muted);font-weight:400}
+input[type=text],input[type=url],select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
+textarea{min-height:84px;resize:vertical}
+.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 18px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:700}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.warn{color:var(--red);border-color:var(--red)}
+.btn.link{border:0;background:none;color:var(--blue);padding:4px 2px;font-weight:400;text-decoration:underline}
+.samples{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chip{font-size:13px;border:1px dashed var(--line);background:var(--surface-2);border-radius:16px;padding:4px 12px;cursor:pointer}
+.match{display:grid;grid-template-columns:70px 1fr auto;gap:14px;align-items:center;border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin-bottom:10px}
+.score{font-size:22px;font-weight:700;text-align:center;line-height:1}
+.score small{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:3px}
+.score.hi{color:var(--accent)}.score.mid{color:var(--amber)}.score.lo{color:var(--muted)}
+.code{font-weight:700}
+.why{font-size:13px;color:var(--ink-2)}
+.why span{display:inline-block;margin-right:10px}
+.ok::before{content:"✓ ";color:var(--accent);font-weight:700}
+.no::before{content:"✗ ";color:var(--red);font-weight:700}
+.banner{border-radius:8px;padding:11px 14px;margin:12px 0;font-size:14px}
+.banner.info{background:var(--blue-soft)}
+.banner.good{background:var(--accent-soft)}
+.banner.warnb{background:var(--amber-soft)}
+.banner.bad{background:var(--red-soft)}
+.kv{display:grid;grid-template-columns:170px 1fr;gap:6px 14px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:700}
+.split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+.preview{position:sticky;top:16px}
+.desc{font-weight:700;font-size:16px;letter-spacing:.01em;word-break:break-word;padding:10px 12px;background:var(--surface-2);border-radius:7px;min-height:44px}
+.ruler{margin:8px 0 2px;display:grid;grid-template-columns:repeat(40,1fr);gap:2px}
+.ruler i{height:10px;border-radius:2px;background:var(--line)}
+.ruler i.on{background:var(--accent)}
+.ruler.over i.on{background:var(--red)}
+.count{font-size:12.5px;color:var(--muted)}
+.count.over{color:var(--red);font-weight:700}
+.long{font-size:14px;padding:10px 12px;background:var(--surface-2);border-radius:7px;min-height:44px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;color:var(--muted);font-weight:700}
+.tablewrap{overflow-x:auto}
+.st{display:inline-block;border-radius:10px;padding:1px 9px;font-size:12px;font-weight:700;white-space:nowrap}
+.st.pqa{background:var(--amber-soft);color:var(--amber)}
+.st.app{background:var(--accent-soft);color:var(--accent)}
+.st.map{background:var(--blue-soft);color:var(--blue)}
+.st.rej{background:var(--red-soft);color:var(--red)}
+.st.mph{background:var(--surface-2);color:var(--ink-2)}
+.st.rev{background:var(--surface-2);color:var(--ink-2)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi b{display:block;font-size:28px;line-height:1.1}
+.kpi span{font-size:13px;color:var(--muted)}
+.bars .b{display:grid;grid-template-columns:170px 1fr 48px;gap:10px;align-items:center;margin:7px 0;font-size:13.5px}
+.bars .track{height:14px;background:var(--surface-2);border-radius:7px;overflow:hidden}
+.bars .fill{height:100%;background:var(--accent);border-radius:7px}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:22px;text-align:center;color:var(--muted)}
+.files{font-size:13px;color:var(--ink-2);margin-top:6px}
+.toast{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:8px;font-weight:700;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  nav{flex-direction:row;flex-wrap:wrap;padding:12px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--side)}
+  .brand{width:100%;margin:0 4px 6px}
+  .role{margin:0;border:0;padding:6px 4px;width:100%}
+  .proto{display:none}
+  main{padding:20px 16px 50px}
+  .split,.row,.row3{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steps{flex-wrap:wrap}.steps li{flex:1 1 45%;border-bottom:1px solid var(--line)}
+  .preview{position:static}
+  .bars .b{grid-template-columns:110px 1fr 40px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav aria-label="Portal sections">
+  <div class="brand">MPH Item Portal<small>Item standardization</small></div>
+  <button data-v="new" aria-current="page">New item</button>
+  <button data-v="batch">Batch upload</button>
+  <button data-v="queue">Review queue <span class="pill" id="qcount">0</span></button>
+  <button data-v="dash">Dashboard</button>
+  <button data-v="export">Export</button>
+  <div class="role"><label for="role">Signed in as</label>
+    <select id="role"><option value="prod">Production analyst</option><option value="qa">QA reviewer</option></select></div>
+  <p class="proto">Prototype with sample data. Nothing is saved.</p>
+</nav>
+<main id="main"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ---------- Sample reference data (illustrative)
+const MASTER=[
+ {code:'MPH-K00211',cat:'CATHETERS',short:'CATHETER;IV,22G,25MM,W/ WINGS,VENFLON',long:'CATHETER, IV, 22G X 25MM, WITH WINGS AND INJECTION PORT, VENFLON PRO SAFETY, BD',unspsc:'42221512'},
+ {code:'MPH-K00212',cat:'CATHETERS',short:'CATHETER;IV,20G,32MM,W/ WINGS,VENFLON',long:'CATHETER, IV, 20G X 32MM, WITH WINGS AND INJECTION PORT, VENFLON PRO SAFETY, BD',unspsc:'42221512'},
+ {code:'MPH-K00215',cat:'CATHETERS',short:'CATHETER;IV,24G,19MM,SAFETY,INTROCAN',long:'CATHETER, IV, 24G X 19MM, SAFETY, INTROCAN SAFETY, B. BRAUN',unspsc:'42221512'},
+ {code:'MPH-N00301',cat:'NEEDLE',short:'NEEDLE;WINGED INFUSION,23G,19MM,30CM',long:'NEEDLE, WINGED INFUSION, 23G X 19MM, WITH 30CM TUBING, NIPRO',unspsc:'42142547'},
+ {code:'MPH-N00305',cat:'NEEDLE',short:'NEEDLE;WINGED INFUSION,21G,19MM,30CM',long:'NEEDLE, WINGED INFUSION, 21G X 19MM, WITH 30CM TUBING, NIPRO',unspsc:'42142547'},
+ {code:'MPH-C00112',cat:'CANNULA',short:'CANNULA;NASAL,ADULT,2.1M',long:'CANNULA, NASAL, ADULT, WITH 2.1M TUBING',unspsc:''}
+];
+const GUIDES={
+ 'CATHETER;IV':{cat:'CATHETERS',unspsc:'42221512',title:'Intravenous catheters',attrs:[
+   {k:'gauge',l:'Gauge',req:1,opts:['14G','16G','18G','20G','22G','24G','26G']},
+   {k:'length',l:'Length',req:1,opts:['19MM','25MM','32MM','45MM','51MM']},
+   {k:'feature',l:'Feature',req:0,opts:['','W/ WINGS','W/ WINGS & PORT','SAFETY'],long:{'W/ WINGS':'WITH WINGS','W/ WINGS & PORT':'WITH WINGS AND INJECTION PORT','SAFETY':'SAFETY'}},
+   {k:'brand',l:'Brand',req:0,free:1},
+   {k:'mfr',l:'Manufacturer',req:1,opts:['BD','B. BRAUN','TERUMO','NIPRO','VYGON']}]},
+ 'NEEDLE;WINGED INFUSION':{cat:'NEEDLE',unspsc:'42142547',title:'Winged infusion needle set',attrs:[
+   {k:'gauge',l:'Gauge',req:1,opts:['19G','21G','23G','25G','27G']},
+   {k:'length',l:'Needle length',req:1,opts:['13MM','19MM','20MM']},
+   {k:'tube',l:'Tubing length',req:0,opts:['','30CM','20CM','8CM'],long:{'30CM':'WITH 30CM TUBING','20CM':'WITH 20CM TUBING','8CM':'WITH 8CM TUBING'}},
+   {k:'brand',l:'Brand',req:0,free:1},
+   {k:'mfr',l:'Manufacturer',req:1,opts:['TERUMO','NIPRO','BD','B. BRAUN']}]}
+};
+const SAMPLES=[
+ {h:'Hospital A',t:'IV cannula 22G x 1 inch with wings and port, BD Venflon Pro Safety'},
+ {h:'Hospital C',t:'Butterfly needle 25G x 3/4 in, 30 cm tube, Terumo Surflo'},
+ {h:'Hospital B',t:'Scalp vein set g23 nipro 30cm'}
+];
+// ---------- State
+const S={view:'new',step:1,role:'prod',input:{h:'Hospital A',t:''},matches:[],cls:null,vals:{},src:'',files:[],
+ items:[
+  {id:'REQ-1041',h:'Hospital D',t:'IV cath 20G pink venflon',status:'map',code:'MPH-K00212',cat:'CATHETERS',short:'CATHETER;IV,20G,32MM,W/ WINGS,VENFLON',by:'Production',days:0.5},
+  {id:'REQ-1042',h:'Hospital B',t:'Introcan safety 24g',status:'app',code:'MPH-K00215',cat:'CATHETERS',short:'CATHETER;IV,24G,19MM,SAFETY,INTROCAN',by:'QA',days:1.0},
+  {id:'REQ-1043',h:'Hospital E',t:'Winged needle 21g nipro',status:'app',code:'MPH-N00305',cat:'NEEDLE',short:'NEEDLE;WINGED INFUSION,21G,19MM,30CM',by:'QA',days:1.5},
+  {id:'REQ-1044',h:'Hospital A',t:'IV catheter 26G yellow, Vygon',status:'pqa',code:'NEW',cat:'CATHETERS',short:'CATHETER;IV,26G,19MM,VYGON',by:'Production',days:0.8},
+  {id:'REQ-1045',h:'Hospital F',t:'Nasal cannula high flow infant',status:'mph',code:'NEW',cat:'CANNULA',short:'CANNULA;NASAL,HIGH FLOW,INFANT',by:'Production',days:2.0,note:'New subtype – pending MPH approval'}
+ ],seq:1046,batch:[]};
+
+// ---------- Helpers
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+function norm(t){return t.toUpperCase().replace(/\bG\s?(\d{2})\b/g,'$1G').replace(/(\d{2})\s?GA?\b/g,'$1G').replace(/3\/4\s?(IN|INCH)?/g,'19MM').replace(/\b1\s?(IN|INCH)\b/g,'25MM').replace(/(\d+)\s?CM/g,'$1CM').replace(/[^A-Z0-9/.]+/g,' ').trim()}
+const SYN={CANNULA:'CATHETER',CATH:'CATHETER',BUTTERFLY:'WINGED',SCALP:'WINGED',SURFLO:'',TUBE:'TUBING'};
+function toks(t){return new Set(norm(t).split(' ').map(w=>SYN[w]!==undefined?SYN[w]:w).filter(w=>w&&w.length>1&&!['X','WITH','AND','IN','SET','THE','IV'].includes(w)))}
+function classify(t){const u=t.toUpperCase();
+ if(/BUTTERFLY|SCALP VEIN|WINGED|VENOFIX|SURFLO/.test(u))return{nt:'NEEDLE;WINGED INFUSION',why:'Hospital term “'+(u.match(/BUTTERFLY|SCALP VEIN|WINGED|VENOFIX|SURFLO/)[0].toLowerCase())+'” maps to winged infusion needle in the Category Map'};
+ if(/IV CANNULA|IV CATH|VENFLON|INTROCAN|JELCO|IV CATHETER/.test(u))return{nt:'CATHETER;IV',why:'Hospital term “'+(u.match(/IV CANNULA|IV CATH(ETER)?|VENFLON|INTROCAN|JELCO/)[0].toLowerCase())+'” maps to IV catheter in the Category Map'};
+ return null}
+function findMatches(t){const a=toks(t);const gq=(norm(t).match(/\b\d{2}G\b/)||[])[0];
+ return MASTER.map(m=>{const b=toks(m.long+' '+m.short);let inter=0;a.forEach(x=>{if(b.has(x))inter++});
+   let sc=inter/Math.max(1,Math.min(a.size,b.size)); const gm=(m.short.match(/\b\d{2}G\b/)||[])[0];
+   const why=[];
+   if(gq&&gm){if(gq===gm){why.push(['ok','Same gauge '+gm])}else{why.push(['no','Gauge differs ('+gq+' vs '+gm+')']);sc*=0.55}}
+   const c=classify(t); if(c){if(m.short.startsWith(c.nt)){why.push(['ok','Same Noun;Type'])}else{why.push(['no','Different Noun;Type']);sc*=0.3}}
+   ['VENFLON','INTROCAN','NIPRO','TERUMO','BD'].forEach(br=>{if(a.has(br)&&b.has(br))why.push(['ok','Brand '+br])});
+   return{...m,score:Math.min(99,Math.round(sc*100)),why}}).filter(m=>m.score>=20).sort((x,y)=>y.score-x.score).slice(0,3)}
+function build(nt,v){const g=GUIDES[nt];if(!g)return{short:'',long:''};
+ const sp=[nt];const lp=nt.split(';').join(', ').split(', ');
+ g.attrs.forEach(a=>{const x=(v[a.k]||'').trim().toUpperCase();if(!x)return;
+  if(a.k==='brand'){sp.push(x);lp.push(x)} else if(a.k==='mfr'){lp.push(x)}
+  else{sp.push(a.k==='tube'?x:x);lp.push(a.long&&a.long[x]?a.long[x]:x)}});
+ const gi=lp.findIndex(p=>/^\d{2}G$/.test(p));if(gi>-1&&/MM$/.test(lp[gi+1]||'')){lp.splice(gi,2,lp[gi]+' X '+lp[gi+1])}
+ let short=sp.join(',');
+ if(short.length>40&&v.brand){short=sp.filter(p=>p!==v.brand.toUpperCase()).join(',')}
+ return{short,long:lp.join(', ')}}
+function prefill(nt,t){const g=GUIDES[nt],n=norm(t),v={};
+ g.attrs.forEach(a=>{if(a.opts){const hit=a.opts.find(o=>o&&n.split(' ').includes(o.replace(/ .*/,'')));if(hit)v[a.k]=hit}});
+ if(/WINGS/.test(n)&&/PORT/.test(n))v.feature='W/ WINGS & PORT';else if(/WINGS/.test(n))v.feature='W/ WINGS';
+ if(/VENFLON/.test(n))v.brand='VENFLON PRO SAFETY';if(/SURFLO/.test(n))v.brand='SURFLO';
+ if(/\bBD\b/.test(n))v.mfr='BD';if(/TERUMO/.test(n))v.mfr='TERUMO';if(/NIPRO/.test(n))v.mfr='NIPRO';
+ if(/30CM/.test(n))v.tube='30CM';return v}
+function dupCheck(short){const s=short.replace(/,[A-Z .]+$/,'');return MASTER.filter(m=>m.short===short||m.short.startsWith(s+','))}
+const STL={map:['map','Mapped to existing'],pqa:['pqa','Pending QA'],app:['app','Approved'],rej:['rej','Returned'],mph:['mph','Pending MPH approval'],rev:['rev','Needs review']};
+const st=k=>`<span class="st ${STL[k][0]}">${STL[k][1]}</span>`;
+
+// ---------- Views
+function stepper(){const L=['Describe','Match','Classify','Attributes','Check and submit'];
+ return `<ol class="steps" aria-label="Progress">${L.map((l,i)=>`<li class="${i+1<S.step?'done':i+1===S.step?'now':''}"${i+1===S.step?' aria-current="step"':''}><span class="n">${i+1<S.step?'✓':i+1}</span>${l}</li>`).join('')}</ol>`}
+function vNew(){let h=`<h1>New item</h1><p class="sub">Start from the hospital’s description. The portal checks the master first, so no duplicate MPH code is created.</p>`+stepper();
+ if(S.step===1){h+=`<div class="panel"><h2>What did the hospital request?</h2>
+  <div class="row"><div><label class="f" for="hosp">Hospital</label><select id="hosp">${['Hospital A','Hospital B','Hospital C','Hospital D','Hospital E','Hospital F'].map(x=>`<option${x===S.input.h?' selected':''}>${x}</option>`).join('')}</select></div><div></div></div>
+  <label class="f" for="hdesc">Hospital item description <span class="req">*</span></label>
+  <textarea id="hdesc" placeholder="Paste the description exactly as the hospital wrote it">${esc(S.input.t)}</textarea>
+  <div class="samples" aria-label="Sample descriptions"><span class="hint">Try a sample:</span>${SAMPLES.map((s,i)=>`<button class="chip" data-sample="${i}">${esc(s.t)}</button>`).join('')}</div>
+  <div class="btns"><button class="btn primary" id="go1">Find matches</button></div></div>`}
+ if(S.step===2){h+=`<div class="panel"><h2>Closest items in the MPH master</h2><p class="hint" style="margin-top:-4px">For: “${esc(S.input.t)}” (${esc(S.input.h)})</p>`;
+  if(!S.matches.length)h+=`<div class="banner info">No close match in the master. Continue to classify it as a new item.</div>`;
+  S.matches.forEach((m,i)=>{const c=m.score>=75?'hi':m.score>=45?'mid':'lo';
+   h+=`<div class="match"><div class="score ${c}">${m.score}%<small>match</small></div><div><div class="code">${m.code} <span class="hint">${m.cat}</span></div><div>${esc(m.short)}</div><div class="why">${m.why.map(w=>`<span class="${w[0]}">${esc(w[1])}</span>`).join('')}</div></div><div><button class="btn${i===0&&m.score>=75?' primary':''}" data-use="${i}">Use this code</button></div></div>`});
+  h+=`<div class="btns"><button class="btn" id="back">Back</button><button class="btn" id="nomatch">None of these – create new item</button></div></div>`}
+ if(S.step===3){const c=S.cls;h+=`<div class="panel"><h2>Classify the new item</h2>`;
+  if(c){const g=GUIDES[c.nt];h+=`<div class="banner good">Suggested: <b>${c.nt}</b>. ${esc(c.why)}.</div>
+   <dl class="kv"><dt>MPH category</dt><dd>${g.cat}</dd><dt>Noun;Type</dt><dd>${c.nt}</dd><dt>UNSPSC commodity</dt><dd>${g.unspsc} – ${g.title}</dd><dt>Attribute guide</dt><dd>${g.cat} tab, ${g.attrs.length} attributes</dd></dl>`}
+  else h+=`<div class="banner warnb">No suggestion for this description. Choose the Noun;Type manually.</div>`;
+  h+=`<label class="f" for="ntsel">Change classification</label><select id="ntsel">${Object.keys(GUIDES).map(k=>`<option${c&&c.nt===k?' selected':''}>${k}</option>`).join('')}</select>
+  <div class="btns"><button class="btn" id="back">Back</button><button class="btn primary" id="go3">Approve classification</button></div></div>`}
+ if(S.step===4){const g=GUIDES[S.cls.nt],d=build(S.cls.nt,S.vals),n=d.short.length,over=n>40;
+  h+=`<div class="split"><div class="panel"><h2>Attributes for ${S.cls.nt}</h2><p class="hint" style="margin-top:-4px">In the guide’s sequence. Values the portal read from the hospital text are filled in for you to confirm.</p><div class="row">`+
+  g.attrs.map(a=>`<div><label class="f" for="a_${a.k}">${a.l} ${a.req?'<span class="req">*</span>':''}</label>`+(a.free?`<input type="text" id="a_${a.k}" data-attr="${a.k}" value="${esc(S.vals[a.k]||'')}">`:`<select id="a_${a.k}" data-attr="${a.k}">${a.opts.map(o=>`<option value="${o}"${(S.vals[a.k]||'')===o?' selected':''}>${o||'—'}</option>`).join('')}${a.req&&!S.vals[a.k]?'<option value="" selected>Select</option>':''}</select>`)+`</div>`).join('')+
+  `</div><label class="f" for="src">Source link <span class="req">*</span> <span class="hint">supplier page, catalogue or brochure</span></label><input type="url" id="src" placeholder="https://" value="${esc(S.src)}">
+  <label class="f" for="att">Supporting documents <span class="hint">brochure, item picture</span></label><input type="file" id="att" multiple><div class="files">${S.files.map(esc).join(', ')}</div>
+  <div class="btns"><button class="btn" id="back">Back</button><button class="btn primary" id="go4">Check for duplicates</button></div></div>
+  <div class="panel preview" aria-live="polite"><h2>Descriptions</h2><label class="f">Short description</label><div class="desc">${esc(d.short)||'<span class="hint">Fills in as you choose attributes</span>'}</div>
+  <div class="ruler${over?' over':''}" aria-hidden="true">${Array.from({length:40},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</div>
+  <div class="count${over?' over':''}">${n} of 40 characters${over?' – shorten an attribute':''}</div>
+  <label class="f">Long description</label><div class="long">${esc(d.long)}</div>
+  <p class="hint">Built from the ${g.cat} attribute guide: Noun;Type first, then attributes in sequence, dictionary terms only.</p></div></div>`}
+ if(S.step===5){const d=build(S.cls.nt,S.vals),dups=dupCheck(d.short),g=GUIDES[S.cls.nt];
+  h+=`<div class="panel"><h2>Check and submit</h2>`+(dups.length?`<div class="banner bad"><b>Possible duplicate.</b> ${dups.map(m=>m.code+' '+esc(m.short)).join('; ')}. Use the existing code or confirm this item is different.</div>`:`<div class="banner good"><b>No duplicate found</b> in the master for this short description.</div>`)+
+  `<dl class="kv"><dt>Hospital request</dt><dd>${esc(S.input.t)} (${esc(S.input.h)})</dd><dt>Category / UNSPSC</dt><dd>${g.cat} / ${g.unspsc}</dd><dt>Short description</dt><dd>${esc(d.short)}</dd><dt>Long description</dt><dd>${esc(d.long)}</dd><dt>Source</dt><dd>${esc(S.src)}</dd><dt>Attachments</dt><dd>${S.files.length?S.files.map(esc).join(', '):'None'}</dd></dl>
+  <div class="btns"><button class="btn" id="back">Back</button><button class="btn primary" id="submit">Submit for QA</button></div></div>`}
+ return h}
+function vQueue(){const qa=S.role==='qa';
+ return `<h1>Review queue</h1><p class="sub">${qa?'Approve or return items submitted by Production. Every decision is logged.':'Items you’ve submitted. Switch to QA reviewer in the sidebar to approve them.'}</p>
+ <div class="panel tablewrap"><table><thead><tr><th>Request</th><th>Hospital description</th><th>Result</th><th>Category</th><th>Status</th>${qa?'<th>QA action</th>':''}</tr></thead><tbody>`+
+ S.items.slice().reverse().map(it=>`<tr><td>${it.id}<br><span class="hint">${it.h}</span></td><td>${esc(it.t)}</td><td><b>${it.code}</b><br>${esc(it.short)}${it.note?`<br><span class="hint">${esc(it.note)}</span>`:''}</td><td>${it.cat}</td><td>${st(it.status)}</td>${qa?`<td>${it.status==='pqa'?`<button class="btn primary" data-qa="${it.id}" data-a="app">Approve</button> <button class="btn warn" data-qa="${it.id}" data-a="rej">Return</button>`:'<span class="hint">—</span>'}</td>`:''}</tr>`).join('')+`</tbody></table></div>`}
+function vDash(){const c=k=>S.items.filter(i=>i.status===k).length,tot=S.items.length;
+ const cats={};S.items.forEach(i=>cats[i.cat]=(cats[i.cat]||0)+1);const mx=Math.max(...Object.values(cats));
+ const avg=(S.items.reduce((a,b)=>a+(b.days||0),0)/tot).toFixed(1);
+ const rej=S.items.filter(i=>i.status==='rej').length,dec=S.items.filter(i=>['app','rej'].includes(i.status)).length;
+ return `<h1>Dashboard</h1><p class="sub">Live status of new-item requests. Use it for the Wednesday and Friday updates to MPH.</p>
+ <div class="kpis"><div class="kpi"><b>${tot}</b><span>Requests received</span></div><div class="kpi"><b>${c('map')}</b><span>Mapped to an existing code</span></div><div class="kpi"><b>${c('pqa')}</b><span>Waiting for QA</span></div><div class="kpi"><b>${avg} days</b><span>Average turnaround</span></div></div>
+ <div class="row"><div class="panel"><h2>By status</h2><div class="bars">${Object.keys(STL).filter(k=>c(k)).map(k=>`<div class="b"><span>${STL[k][1]}</span><div class="track"><div class="fill" style="width:${c(k)/tot*100}%"></div></div><b>${c(k)}</b></div>`).join('')}</div></div>
+ <div class="panel"><h2>By category</h2><div class="bars">${Object.entries(cats).map(([k,v])=>`<div class="b"><span>${k}</span><div class="track"><div class="fill" style="width:${v/mx*100}%;background:var(--blue)"></div></div><b>${v}</b></div>`).join('')}</div>
+ <p class="hint">QA return rate: ${dec?Math.round(rej/dec*100):0}% of ${dec} decided items.</p></div></div>`}
+function vBatch(){return `<h1>Batch upload</h1><p class="sub">Upload many hospital requests at once. The portal suggests a match or classification for each row; the team still approves each one.</p>
+ <div class="panel"><div class="drop"><p><b>Drop an Excel or CSV file here</b><br>Columns: Hospital, Hospital description</p><button class="btn primary" id="loadbatch">Load sample file (5 rows)</button></div></div>
+ ${S.batch.length?`<div class="panel tablewrap"><h2>Suggestions for ${S.batch.length} rows</h2><table><thead><tr><th>Hospital</th><th>Hospital description</th><th>Suggestion</th><th>Confidence</th><th>Next step</th></tr></thead><tbody>${S.batch.map((r,i)=>`<tr><td>${r.h}</td><td>${esc(r.t)}</td><td>${r.m?`Use <b>${r.m.code}</b><br>${esc(r.m.short)}`:r.c?`New item: <b>${r.c.nt}</b>`:'<span class="hint">No suggestion</span>'}</td><td>${r.m?r.m.score+'%':r.c?'Classified':'—'}</td><td><button class="btn" data-open="${i}">Open</button></td></tr>`).join('')}</tbody></table></div>`:''}`}
+function vExport(){const ap=S.items.filter(i=>['app','map'].includes(i.status));
+ return `<h1>Export</h1><p class="sub">Download approved items to update the masterfile or send to MPH.</p>
+ <div class="panel"><div class="row"><div><label class="f" for="ex1">What to export</label><select id="ex1"><option>New standardized items only</option><option>Updated masterfile (all categories)</option><option>Items mapped to existing codes</option></select></div>
+ <div><label class="f" for="ex2">Format</label><select id="ex2"><option>Excel (.xlsx)</option><option>CSV</option></select></div></div>
+ <div class="btns"><button class="btn primary" id="doexp">Export ${ap.length} approved items</button></div></div>
+ <div class="panel tablewrap"><h2>Preview</h2><table><thead><tr><th>MPH code</th><th>Category</th><th>Short description</th><th>Status</th></tr></thead><tbody>${ap.map(i=>`<tr><td>${i.code}</td><td>${i.cat}</td><td>${esc(i.short)}</td><td>${st(i.status)}</td></tr>`).join('')}</tbody></table></div>`}
+
+function render(){const v={new:vNew,queue:vQueue,dash:vDash,batch:vBatch,export:vExport}[S.view];$('#main').innerHTML=v();
+ document.querySelectorAll('nav button').forEach(b=>b.toggleAttribute('aria-current',b.dataset.v===S.view)||(b.dataset.v===S.view&&b.setAttribute('aria-current','page')));
+ $('#qcount').textContent=S.items.filter(i=>i.status==='pqa').length;}
+function resetNew(){Object.assign(S,{step:1,matches:[],cls:null,vals:{},src:'',files:[],input:{h:'Hospital A',t:''}})}
+function addItem(o){S.items.push(Object.assign({id:'REQ-'+(S.seq++),h:S.input.h,t:S.input.t,by:'Production',days:0.2},o))}
+
+document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
+ if(t.dataset.v){S.view=t.dataset.v;render();$('#main').focus?.();return}
+ if(t.dataset.sample!==undefined){const s=SAMPLES[+t.dataset.sample];S.input={h:s.h,t:s.t};render();return}
+ if(t.id==='go1'){S.input.t=$('#hdesc').value.trim();S.input.h=$('#hosp').value;if(!S.input.t){toast('Enter the hospital description first');return}S.matches=findMatches(S.input.t);S.step=2;render();return}
+ if(t.id==='back'){S.step--;render();return}
+ if(t.dataset.use!==undefined){const m=S.matches[+t.dataset.use];addItem({status:'map',code:m.code,cat:m.cat,short:m.short});toast('Mapped to '+m.code+'. No new item created.');resetNew();S.view='queue';render();return}
+ if(t.id==='nomatch'){S.cls=classify(S.input.t)||{nt:Object.keys(GUIDES)[0],why:'Manual choice'};S.step=3;render();return}
+ if(t.id==='go3'){const nt=$('#ntsel').value;if(!S.cls||S.cls.nt!==nt)S.cls={nt,why:'Changed by analyst'};S.vals=prefill(nt,S.input.t);S.step=4;render();return}
+ if(t.id==='go4'){const g=GUIDES[S.cls.nt];const miss=g.attrs.filter(a=>a.req&&!S.vals[a.k]).map(a=>a.l);if(!S.src)miss.push('Source link');
+   if(miss.length){toast('Required: '+miss.join(', '));return}if(build(S.cls.nt,S.vals).short.length>40){toast('Short description is over 40 characters');return}S.step=5;render();return}
+ if(t.id==='submit'){const d=build(S.cls.nt,S.vals);addItem({status:'pqa',code:'NEW',cat:GUIDES[S.cls.nt].cat,short:d.short});toast('Submitted for QA');resetNew();S.view='queue';render();return}
+ if(t.dataset.qa){const it=S.items.find(i=>i.id===t.dataset.qa);it.status=t.dataset.a;if(t.dataset.a==='app'){it.code='MPH-'+(it.cat[0])+'0'+(900+S.seq%100)}toast(t.dataset.a==='app'?'Approved as '+it.code:'Returned to Production');render();return}
+ if(t.id==='loadbatch'){S.batch=[...SAMPLES,{h:'Hospital D',t:'IV catheter 18G 45mm, Terumo'},{h:'Hospital E',t:'Specimen container 60ml sterile'}].map(r=>({...r,m:(findMatches(r.t).find(m=>m.score>=75))||null,c:classify(r.t)}));render();return}
+ if(t.dataset.open!==undefined){const r=S.batch[+t.dataset.open];resetNew();S.input={h:r.h,t:r.t};S.matches=findMatches(r.t);S.step=2;S.view='new';render();return}
+ if(t.id==='doexp'){toast('In the full portal this downloads the file');return}
+});
+document.addEventListener('change',e=>{const t=e.target;
+ if(t.dataset.attr){S.vals[t.dataset.attr]=t.value;render();const el=document.getElementById(t.id);el&&el.focus();return}
+ if(t.id==='src'){S.src=t.value}
+ if(t.id==='att'){S.files=[...t.files].map(f=>f.name);render()}
+ if(t.id==='role'){S.role=t.value;render()}
+});
+document.addEventListener('input',e=>{const t=e.target;if(t.id==='src')S.src=t.value;if(t.id==='hdesc')S.input.t=t.value;
+ if(t.dataset.attr&&t.tagName==='INPUT'){S.vals[t.dataset.attr]=t.value;const d=build(S.cls.nt,S.vals),n=d.short.length;
+  const p=document.querySelector('.preview');if(p){p.querySelector('.desc').textContent=d.short;p.querySelector('.long').textContent=d.long;
+   p.querySelectorAll('.ruler i').forEach((x,i)=>x.classList.toggle('on',i<n));p.querySelector('.ruler').classList.toggle('over',n>40);
+   const c=p.querySelector('.count');c.textContent=n+' of 40 characters'+(n>40?' – shorten an attribute':'');c.classList.toggle('over',n>40)}}});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+.import-checkpoints/
+.import-85k-check.xlsx
+.codex-tmp/
+__pycache__/
+.venv-import/

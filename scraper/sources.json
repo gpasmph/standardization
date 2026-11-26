@@ -1,0 +1,7 @@
+[
+  {
+    "name": "Phil Medical Supplies",
+    "search": "https://philmedicalsupplies.com/?s={q}&post_type=product",
+    "link": "a[href*='/product/']"
+  }
+]
